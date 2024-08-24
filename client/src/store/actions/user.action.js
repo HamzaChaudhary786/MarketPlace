@@ -1,5 +1,5 @@
 import * as ReducerActions from '../reducers/user.reducer';
-import {API_URL} from '../../constants/index'
+import { API_URL } from '../../constants/index'
 
 import axios from 'axios';
 
@@ -38,22 +38,25 @@ export const registerAction = (userName, email, password) => {
 };
 
 
-export const loginAction = (formData) => {
+export const loginAction = (email, password) => {
     return async (dispatch) => {
+
+        const body = {
+            email: email,
+            password: password,
+        }
         try {
-            const response = await axios.post('http://localhost:3001/auth/login', formData, {
+            const response = await axios.post(`${API_URL}/api/auth/signin`, body, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
 
-
-            const { user, token } = response.data;
-
-            console.log(user, 'userDate is ')
+            const { rest: user, token } = await response.data;
 
             localStorage.setItem('token', token);
 
+            console.log(user, 'userDate is  ' + token);
 
             dispatch(
                 ReducerActions.setLogin({

@@ -56,7 +56,8 @@ const Navbar = () => {
                         <Link to='/signin'>
                             <li className='hover:underline hover:text-indigo-500 cursor-pointer font-medium'>
                                 Signin
-                            </li></Link>
+                            </li>
+                        </Link>
                     </ul>
                 </div>
 

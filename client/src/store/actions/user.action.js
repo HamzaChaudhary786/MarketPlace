@@ -77,3 +77,51 @@ export const loginAction = (email, password) => {
 };
 
 
+
+
+
+
+export const googleAuthAction = (result) => {
+
+
+    return async (dispatch) => {
+
+        const body = {
+
+            name: result.user.displayName,
+            email: result.user.email,
+            photo: result.user.photoURL,
+
+        }
+
+        try {
+            const response = await axios.post(`${API_URL}/api/auth/google`, body, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const { rest: user } = await response.data;
+
+            // localStorage.setItem('token', token);
+
+            // console.log(user, 'userDate is  ' + token);
+
+            // dispatch(
+            //     ReducerActions.setLogin({
+            //         user,
+            //         token
+            //     }),
+            // );
+
+            // Handle the response here if needed
+
+        } catch (error) {
+            if (error instanceof Error) {
+                console.log('error', error);
+                return error.message;
+            }
+        }
+    };
+};
+

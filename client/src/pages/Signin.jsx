@@ -6,6 +6,8 @@ import { useForm } from 'react-hook-form';
 import * as Actions from '../store/actions';
 import { useDispatch } from 'react-redux'
 import { EMAIL_REGEX, PASSWORD_REGEX } from '../constants/index';
+import OAuth from '../components/OAuth'
+
 const SignIn = () => {
 
   const dispatch = useDispatch();
@@ -37,7 +39,7 @@ const SignIn = () => {
     setIsLoading(false);
     try {
       setIsLoading(true);
-      const response = await dispatch(Actions.loginAction( data.email, data.password));
+      const response = await dispatch(Actions.loginAction(data.email, data.password));
 
       if (response) throw response;
 
@@ -49,7 +51,7 @@ const SignIn = () => {
       setError('')
       if (typeof error === 'string') {
         setError(error);
-      } 
+      }
     }
   };
 
@@ -60,7 +62,7 @@ const SignIn = () => {
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl text-center font-semibold my-7'>Sign In</h1>
       <form onSubmit={handleSubmit(handleLoginForm)} className='flex flex-col gap-4'>
-    
+
         <TextField
           style={{ width: '100%', margin: '5px' }}
           type="email"
@@ -101,6 +103,8 @@ const SignIn = () => {
         >
           {isLoading ? 'Loading...' : 'Sign In'}
         </button>
+
+        <OAuth />
 
       </form>
       <div className='flex gap-2 mt-5'>

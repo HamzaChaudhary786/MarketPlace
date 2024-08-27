@@ -2,8 +2,11 @@ import { InputAdornment, TextField } from '@mui/material'
 import React from 'react'
 import { FaSearch } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
-
+import { useSelector } from 'react-redux'
 const Navbar = () => {
+
+    const currentUser = useSelector((state) => state.user.userData)
+    console.log(currentUser)
     return (
         <>
 
@@ -53,11 +56,21 @@ const Navbar = () => {
                                 About
                             </li>
                         </Link>
-                        <Link to='/signin'>
-                            <li className='hover:underline hover:text-indigo-500 cursor-pointer font-medium'>
-                                Signin
-                            </li>
+                        <Link to='/profile'>
+                            {
+
+                                currentUser ? (
+                                    <img src={currentUser.avatar} className='h-10 w-10 object-cover rounded-full' alt="profile" />
+                                ) : (
+
+                                    <li className='hover:underline hover:text-indigo-500 cursor-pointer font-medium'>
+                                        Signin
+                                    </li>
+
+                                )
+                            }
                         </Link>
+
                     </ul>
                 </div>
 

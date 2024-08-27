@@ -101,18 +101,18 @@ export const googleAuthAction = (result) => {
                 }
             });
 
-            const { rest: user } = await response.data;
+            const { rest: user, token } = await response.data;
 
-            // localStorage.setItem('token', token);
+            localStorage.setItem('token', token);
 
-            // console.log(user, 'userDate is  ' + token);
+            console.log(user, 'userDate is  ' + token);
 
-            // dispatch(
-            //     ReducerActions.setLogin({
-            //         user,
-            //         token
-            //     }),
-            // );
+            dispatch(
+                ReducerActions.setLogin({
+                    user,
+                    token
+                }),
+            );
 
             // Handle the response here if needed
 

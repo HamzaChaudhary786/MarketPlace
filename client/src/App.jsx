@@ -7,6 +7,7 @@ import Signout from './pages/Signout'
 import About from './pages/About'
 import Profile from './pages/Profile'
 import Navbar from './commonComponents/Navbar'
+import PrivateRoute from './components/PrivateRoute'
 
 const App = () => {
   return (
@@ -18,7 +19,9 @@ const App = () => {
         <Route path='/signin' element={<Signin />} />
         <Route path='/signup' element={<Signout />} />
         <Route path='/about' element={<About />} />
-        <Route path='/profile' element={<Profile />} />
+        <Route element={<PrivateRoute />}>
+          <Route path='/profile' element={<Profile />} />
+        </Route>
       </Routes>
     </>
 

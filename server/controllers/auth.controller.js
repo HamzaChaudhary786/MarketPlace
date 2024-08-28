@@ -11,7 +11,6 @@ export const signup = async (req, res, next) => {
     const newUser = new User({ username, email, password: hashPassword });
     const salt = await bcryptjs.genSalt(10);
 
-    console.log(newUser);
 
     try {
         await newUser.save();
@@ -31,13 +30,13 @@ export const signin = async (req, res, next) => {
         const isMatch = await bcryptjs.compare(password, user.password);
         if (!isMatch) return next(errorHandler(404, "Invalid user password"));
 
-        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY);
+        const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY); // Ensure you're using JWT_SECRET_KEY
 
         const { password: pass, ...rest } = user._doc;
 
         res.cookie('access_token', token, { httpOnly: true })
             .status(200)
-            .json({ rest, token });  // Include token in the response body
+            .json({ rest, token });// Include token in the response body
 
         console.log('User authenticated successfully', user);
     } catch (error) {
@@ -70,7 +69,7 @@ export const google = async (req, res, next) => {
 
             await newUser.save();
 
-            
+
             const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY);
             const { password: pass, ...rest } = user._doc;
 

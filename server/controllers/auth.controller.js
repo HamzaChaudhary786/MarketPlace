@@ -32,11 +32,18 @@ export const signin = async (req, res, next) => {
 
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY); // Ensure you're using JWT_SECRET_KEY
 
+        console.log(token, "Token Daata s");
+
         const { password: pass, ...rest } = user._doc;
 
-        res.cookie('access_token', token, { httpOnly: true })
+        res.cookie('access_token', token, {
+            httpOnly: true, // Prevents JavaScript access to the cookie
+            secure: process.env.NODE_ENV === 'production', // Use secure cookies in production (HTTPS only)
+            sameSite: 'lax', // Controls if cookies should be sent with cross-origin requests
+            maxAge: 24 * 60 * 60 * 1000 // Cookie expiry in milliseconds (e.g., 1 day)
+        })
             .status(200)
-            .json({ rest, token });// Include token in the response body
+            .json(rest);
 
         console.log('User authenticated successfully', user);
     } catch (error) {
@@ -55,7 +62,7 @@ export const google = async (req, res, next) => {
 
             res.cookie('access_token', token, { httpOnly: true })
                 .status(200)
-                .json({ rest, token });  // Include token in the response body
+                .json(rest);  // Include token in the response body
 
             console.log('User authenticated successfully', user);
         }
@@ -73,22 +80,17 @@ export const google = async (req, res, next) => {
             const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET_KEY);
             const { password: pass, ...rest } = user._doc;
 
-            res.cookie('access_token', token, { httpOnly: true })
-                .status(200)
-                .json({ rest, token });  // Include token in the response body
 
-            console.log('User authenticated successfully', user);
+            res.cookie('access_token', token, {
+                httpOnly: true, // Prevents JavaScript access to the cookie
+                secure: process.env.NODE_ENV === 'production', // Use secure cookies in production (HTTPS only)
+                sameSite: 'lax', // Controls if cookies should be sent with cross-origin requests
+                maxAge: 24 * 60 * 60 * 1000 // Cookie expiry in milliseconds (e.g., 1 day)
+            })
+                .status(200)
+                .json(rest);
 
         }
-
-        // const isMatch = await bcryptjs.compare(password, user.password);
-        // if (!isMatch) return next(errorHandler(404, "Invalid user password"));
-
-
-
-
-
-
     } catch (error) {
         next(error);
     }

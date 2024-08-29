@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom';
+import * as Actions from '../store/actions';
+
 import {
   getDownloadURL,
   getStorage,
@@ -21,6 +23,9 @@ const Profile = () => {
   const dispatch = useDispatch();
 
   const currentUser = useSelector((state) => state.user.userData)
+
+
+  console.log("currentUser", currentUser)
 
   const [file, setFile] = useState(undefined);
   const [error, setError] = useState();
@@ -74,10 +79,40 @@ const Profile = () => {
 
   }
 
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+
+  console.log(formData, "FORM DATA IS");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await dispatch(
+        Actions.updateUserAction(
+          currentUser._id,
+          formData.username,
+          formData.email,
+          formData.password,
+          formData.avatar
+        )
+      );
+
+      // Optionally check or handle if the currentUser is updated correctly
+      
+      setError(null); // Clear error if any
+    } catch (error) {
+      setError(error);
+    }
+  };
+
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
-      <form onSubmit="" className='flex flex-col gap-4'>
+      <form onSubmit={handleSubmit} className='flex flex-col gap-4'>
         <input
           onChange={(e) => setFile(e.target.files[0])}
           type='file'
@@ -110,7 +145,7 @@ const Profile = () => {
           defaultValue={currentUser.username}
           id='username'
           className='border p-3 rounded-lg'
-        // onChange={handleChange}
+          onChange={handleChange}
         />
         <input
           type='email'
@@ -118,12 +153,12 @@ const Profile = () => {
           id='email'
           defaultValue={currentUser.email}
           className='border p-3 rounded-lg'
-        // onChange={handleChange}
+          onChange={handleChange}
         />
         <input
           type='password'
           placeholder='password'
-          // onChange={handleChange}
+          onChange={handleChange}
           id='password'
           className='border p-3 rounded-lg'
         />

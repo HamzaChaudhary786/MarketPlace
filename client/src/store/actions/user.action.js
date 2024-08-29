@@ -3,7 +3,7 @@ import { API_URL } from '../../constants/index'
 
 import axios from 'axios';
 
-
+axios.defaults.withCredentials = true;
 
 
 
@@ -44,24 +44,60 @@ export const loginAction = (email, password) => {
         const body = {
             email: email,
             password: password,
-        }
+        };
         try {
             const response = await axios.post(`${API_URL}/api/auth/signin`, body, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true // Ensure credentials are sent with requests
+            });
+
+            const user = await response.data;
+
+            dispatch(
+                ReducerActions.setLogin({
+                    user,
+                }),
+            );
+
+        } catch (error) {
+            if (error instanceof Error) {
+                console.log('error', error);
+                return error.message;
+            }
+        }
+    };
+};
+
+
+
+
+export const updateUserAction = (id, username, email, password, avatar) => {
+    return async (dispatch) => {
+
+        const body = {
+            username,
+            email,
+            password,
+            avatar
+        }
+
+        try {
+            const response = await axios.post(`${API_URL}/api/user/update/${id}`, body, {
+
+
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
 
-            const { rest: user, token } = await response.data;
+            const user = await response.data;
 
-            localStorage.setItem('token', token);
-
-            console.log(user, 'userDate is  ' + token);
 
             dispatch(
                 ReducerActions.setLogin({
                     user,
-                    token
                 }),
             );
 
@@ -98,19 +134,16 @@ export const googleAuthAction = (result) => {
             const response = await axios.post(`${API_URL}/api/auth/google`, body, {
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                withCredentials: true
             });
 
-            const { rest: user, token } = await response.data;
+            const user = await response.data;
 
-            localStorage.setItem('token', token);
-
-            console.log(user, 'userDate is  ' + token);
-
+            console.log(user, "google data");
             dispatch(
                 ReducerActions.setLogin({
-                    user,
-                    token
+                    user
                 }),
             );
 

@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as Actions from '../store/actions';
+
+import { persistor } from '../store/store'
 
 import {
   getDownloadURL,
@@ -21,7 +23,7 @@ const Profile = () => {
 
 
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const currentUser = useSelector((state) => state.user.userData)
 
 
@@ -102,7 +104,28 @@ const Profile = () => {
       );
 
       // Optionally check or handle if the currentUser is updated correctly
-      
+
+      setError(null); // Clear error if any
+    } catch (error) {
+      setError(error);
+    }
+  };
+
+
+  const handleDeleteUser = async (e) => {
+    e.preventDefault();
+
+    try {
+      await dispatch(
+        Actions.deleteUserAction(
+          currentUser._id,
+        ));
+      persistor.purge();
+
+      navigate("/signin")
+
+      // Optionally check or handle if the currentUser is updated correctly
+
       setError(null); // Clear error if any
     } catch (error) {
       setError(error);
@@ -179,6 +202,7 @@ const Profile = () => {
         <span
           // onClick={handleDeleteUser}
           className='text-red-700 cursor-pointer'
+          onClick={handleDeleteUser}
         >
           Delete account
         </span>

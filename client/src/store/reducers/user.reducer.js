@@ -1,12 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-
 const userSlice = createSlice({
   name: 'user',
   initialState: {
     userData: null,
-    token: null,
-    isAuth: false,
- 
   },
   reducers: {
     setLogin: (state, action) => {
@@ -17,11 +13,10 @@ const userSlice = createSlice({
     },
     setLogout: (state) => {
       state.userData = null;
-      state.token = null;
-      localStorage.removeItem('token');
       localStorage.removeItem('userData');
+  
     },
-    
+
   },
 });
 

@@ -145,6 +145,37 @@ export const deleteUserAction = (id) => {
 
 
 
+export const signOutAction = () => {
+    return async (dispatch) => {
+
+
+
+        try {
+            const response = await axios.get(`${API_URL}/api/auth/signout`);
+
+
+            const user = response.data;
+
+            dispatch(
+                ReducerActions.setLogout({user}),
+            );
+
+            // Handle the response here if needed
+
+        } catch (error) {
+            if (error instanceof Error) {
+                console.log('error', error);
+                return error.message;
+            }
+        }
+    };
+};
+
+
+
+
+
+
 
 
 export const googleAuthAction = (result) => {

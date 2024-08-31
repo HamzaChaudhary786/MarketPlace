@@ -132,6 +132,21 @@ const Profile = () => {
     }
   };
 
+
+  const handleSignOut = async (e) => {
+    e.preventDefault();
+
+    try {
+
+      await dispatch(Actions.signOutAction());
+      persistor.purge();
+      navigate("/signin")
+
+    } catch (error) {
+
+    }
+  }
+
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
@@ -207,7 +222,7 @@ const Profile = () => {
           Delete account
         </span>
         <span
-          // onClick={handleSignOut}
+          onClick={handleSignOut}
           className='text-red-700 cursor-pointer'>
           Sign out
         </span>

@@ -3,6 +3,7 @@ const userSlice = createSlice({
   name: 'user',
   initialState: {
     userData: null,
+    litings: null,
   },
   reducers: {
     setLogin: (state, action) => {
@@ -14,11 +15,14 @@ const userSlice = createSlice({
     setLogout: (state) => {
       state.userData = null;
       localStorage.removeItem('userData');
-  
+
     },
+    setListings: (state, action) => {
+      state.litings = action.payload.litings;
+    }
 
   },
 });
 
-export const { setLogin, setLogout } = userSlice.actions;
+export const { setLogin, setLogout, setListings } = userSlice.actions;
 export default userSlice.reducer;

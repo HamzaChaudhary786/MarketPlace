@@ -1,128 +1,125 @@
-import React, { useState } from 'react'
-import {
-    getDownloadURL,
-    getStorage,
-    ref,
-    uploadBytesResumable,
-} from 'firebase/storage'
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { createListingAction } from '../store/actions';
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
 
 const CreateListing = () => {
+    const currentUser = useSelector((state) => state.user.userData);
+    const dispatch = useDispatch();
 
     const [files, setFiles] = useState([]);
     const [formData, setFormData] = useState({
         imageUrls: [],
-        // name: '',
-        // description: '',
-        // address: '',
-        // type: 'rent',
-        // bedrooms: 1,
-        // bathrooms: 1,
-        // regularPrice: 50,
-        // discountPrice: 0,
-        // offer: false,
-        // parking: false,
-        // furnished: false,
+        name: '',
+        description: '',
+        address: '',
+        type: 'rent',
+        bedrooms: 1,
+        bathrooms: 1,
+        regularPrice: 50,
+        discountPrice: 0,
+        offer: false,
+        parking: false,
+        furnished: false,
     });
 
-    console.log("formData", formData);
-
-
     const [filePerc, setFilePerc] = useState(0);
-
-    const [imageUploadError, setImageUploadError] = useState(false);
+    const [imageUploadError, setImageUploadError] = useState('');
     const [uploading, setUploading] = useState(false);
-    const [error, setError] = useState(false);
+    const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleImageSubmit = () => {
+    const handleImageSubmit = async () => {
+        if (files.length > 0 && files.length + formData.imageUrls.length <= 6) {
+            setUploading(true);
+            setImageUploadError('');
+            const promises = Array.from(files).map((file) => storeImage(file));
 
-        try {
-           
-            if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
-                setUploading(true);
-                setImageUploadError(false)
-                const promises = [];
-
-                for (let i = 0; i < files.length; i++) {
-
-                    promises.push(storeImage(files[i]));
-                }
-
-                Promise.all(promises).then((urls) => {
-
-                    setFormData({ ...formData, imageUrls: formData.imageUrls.concat(urls) });
-                    setImageUploadError(false)
-                    setUploading(false)
-                })
-               
-               
-
-            } else {
+            try {
+                const urls = await Promise.all(promises);
+                setFormData((prev) => ({ ...prev, imageUrls: [...prev.imageUrls, ...urls] }));
+            } catch (error) {
+                setImageUploadError('Image size must be 2 MB or less');
+            } finally {
                 setUploading(false);
-                setImageUploadError('You can only upload a maximum of 6 images per listings');
             }
-
-        } catch (error) {
-            setImageUploadError('Image size must be 2 mb or less  ');
-            setUploading(false)
-
+        } else {
+            setImageUploadError('You can only upload a maximum of 6 images per listing');
         }
-    }
+    };
+
     const storeImage = async (file) => {
+        const storage = getStorage(app);
+        const fileName = `${new Date().getTime()}-${file.name}`;
+        const storageRef = ref(storage, fileName);
+        const uploadTask = uploadBytesResumable(storageRef, file);
 
         return new Promise((resolve, reject) => {
-
-            const storage = getStorage(app)
-            const fileName = new Date().getTime() + file.name;
-            const storageRef = ref(storage, fileName);
-            const uploadTask = uploadBytesResumable(storageRef, file);
-
-            console.log(filePerc, "percentage");
-
-
             uploadTask.on(
                 'state_changed',
                 (snapshot) => {
-                    const progress =
-                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
                     setFilePerc(Math.round(progress));
                 },
                 (error) => {
                     reject(error);
                 },
                 () => {
-                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
-                        resolve(downloadURL)
-                    );
+                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => resolve(downloadURL));
                 }
             );
-        })
-
-    }
+        });
+    };
 
     const handleRemoveImage = (index) => {
+        if (index >= 0 && index < formData.imageUrls.length) {
+            setFormData({
+                ...formData,
+                imageUrls: formData.imageUrls.filter((_, i) => i !== index),
+            });
+        }
+    };
 
-        setFormData({
-           ...formData,
-            imageUrls: formData.imageUrls.filter((_, i) => i!== index)
-        })
+    const handleChange = (e) => {
+        const { id, value, checked, type } = e.target;
 
+        if (id === 'discountPrice' && formData.regularPrice !== '' && Number(value) >= Number(formData.regularPrice)) {
+            alert('Discount price must be less than the regular price.');
+            return;
+        }
+        
+        if (id === 'sale' || id === 'rent') {
+            setFormData({ ...formData, type: id });
+        } else if (type === 'checkbox') {
+            setFormData({ ...formData, [id]: checked });
+        } else {
+            setFormData({ ...formData, [id]: value });
+        }
+    };
 
-    }
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        setError('');
 
-
-    const handleChange = () => { }
-
+        try {
+            if (formData.imageUrls.length < 1) {
+                return setError('you must upload at least one image');
+            }
+            const response = await dispatch(createListingAction(formData, currentUser._id));
+        } catch (error) {
+            setError(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <>
-
             <main className='p-3 max-w-4xl mx-auto'>
-                <h1 className='text-3xl font-semibold text-center my-7'>
-                    Create a Listing
-                </h1>
-                <form onSubmit="" className='flex flex-col sm:flex-row gap-4'>
+                <h1 className='text-3xl font-semibold text-center my-7'>Create a Listing</h1>
+                <form onSubmit={handleSubmit} className='flex flex-col sm:flex-row gap-4'>
                     <div className='flex flex-col gap-4 flex-1'>
                         <input
                             type='text'
@@ -322,6 +319,7 @@ const CreateListing = () => {
                                 </div>
                             ))}
                         <button
+                            type='submit'
                             disabled={loading || uploading}
                             className='p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80'
                         >
@@ -331,10 +329,10 @@ const CreateListing = () => {
                     </div>
                 </form>
             </main>
-
         </>
-    )
-}
+    );
+};
+
+export default CreateListing;
 
 
-export default CreateListing

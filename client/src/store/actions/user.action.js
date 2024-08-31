@@ -26,7 +26,7 @@ export const registerAction = (userName, email, password) => {
             });
 
             const data = response.data;  // No need for response.json() with axios
-            console.log(data);
+            console.log(data, "daya is hahah");
 
         } catch (error) {
             if (error instanceof Error) {
@@ -128,7 +128,7 @@ export const deleteUserAction = (id) => {
             const user = response.data;
 
             dispatch(
-                ReducerActions.setLogout({user}),
+                ReducerActions.setLogout({ user }),
             );
 
             // Handle the response here if needed
@@ -157,7 +157,7 @@ export const signOutAction = () => {
             const user = response.data;
 
             dispatch(
-                ReducerActions.setLogout({user}),
+                ReducerActions.setLogout({ user }),
             );
 
             // Handle the response here if needed
@@ -174,6 +174,51 @@ export const signOutAction = () => {
 
 
 
+
+export const createListingAction = (formData, id) => {
+
+    console.log("formdata api function", formData)
+    return async (dispatch) => {
+        const body = {
+            imageUrls: formData.imageUrls,
+            name: formData.name,
+            description: formData.description,
+            address: formData.address,
+            type: formData.type,
+            bedrooms: formData.bathrooms,
+            bathrooms: formData.bathrooms,
+            regularPrice: formData.regularPrice,
+            discountPrice: formData.discountPrice,
+            offer: formData.offer,
+            parking: formData.parking,
+            furnished: formData.furnished,
+            userRef: id,
+        };
+
+        try {
+            const response = await axios.post(`${API_URL}/api/listing/create`, body, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const listings = response.data;
+
+            console.log(listings, "listings data")
+            dispatch(
+                ReducerActions.setListings({
+                    listings,
+                })
+            );
+        } catch (error) {
+            if (error instanceof Error) {
+                console.log('error', error);
+                return error.message;
+            }
+        }
+
+    };
+};
 
 
 

@@ -25,9 +25,12 @@ const Profile = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const currentUser = useSelector((state) => state.user.userData)
+  const listingData = useSelector((state) => state.user.userListingData)
 
 
-  console.log("currentUser", currentUser)
+
+
+  console.log("listing data is", listingData)
 
   const [file, setFile] = useState(undefined);
   const [error, setError] = useState();
@@ -147,6 +150,27 @@ const Profile = () => {
     }
   }
 
+  const handleShowListings = async (e) => {
+    e.preventDefault();
+
+    try {
+
+      const response = await dispatch(Actions.UserListingsAction(currentUser._id));
+
+    } catch (error) {
+      setShowListingsError(true)
+
+    }
+
+  }
+
+  useEffect(() => {
+    if (listingData) {
+      setUserListings(listingData)
+    }
+
+  }, [listingData])
+
   return (
     <div className='p-3 max-w-lg mx-auto'>
       <h1 className='text-3xl font-semibold text-center my-7'>Profile</h1>
@@ -233,7 +257,7 @@ const Profile = () => {
         {updateSuccess ? 'User is updated successfully!' : ''}
       </p>
       <button
-        //  onClick={handleShowListings} 
+        onClick={handleShowListings}
         className='text-green-700 w-full'>
         Show Listings
       </button>

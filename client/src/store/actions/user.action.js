@@ -222,6 +222,43 @@ export const createListingAction = (formData, id) => {
 
 
 
+export const UserListingsAction = (id) => {
+
+
+    return async (dispatch) => {
+
+
+
+        try {
+            const response = await axios.get(`${API_URL}/api/user/listings/${id}`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+
+            const userListingData = await response.data;
+
+
+            console.log(userListingData,"list");
+
+            dispatch(
+                ReducerActions.setUserListingData({
+                    userListingData
+                }),
+            );
+
+            // Handle the response here if needed
+
+        } catch (error) {
+            if (error instanceof Error) {
+                console.log('error', error);
+                return error.message;
+            }
+        }
+    };
+
+}
+
 
 export const googleAuthAction = (result) => {
 
@@ -263,4 +300,7 @@ export const googleAuthAction = (result) => {
         }
     };
 };
+
+
+
 

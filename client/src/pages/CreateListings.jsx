@@ -3,10 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createListingAction } from '../store/actions';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
+import { useNavigate } from 'react-router-dom';
 
 const CreateListing = () => {
     const currentUser = useSelector((state) => state.user.userData);
     const dispatch = useDispatch();
+    const navigate = useNavigate()
 
     const [files, setFiles] = useState([]);
     const [formData, setFormData] = useState({
@@ -88,7 +90,7 @@ const CreateListing = () => {
             alert('Discount price must be less than the regular price.');
             return;
         }
-        
+
         if (id === 'sale' || id === 'rent') {
             setFormData({ ...formData, type: id });
         } else if (type === 'checkbox') {
@@ -108,6 +110,8 @@ const CreateListing = () => {
                 return setError('you must upload at least one image');
             }
             const response = await dispatch(createListingAction(formData, currentUser._id));
+
+            navigate("/profile")
         } catch (error) {
             setError(error.message);
         } finally {

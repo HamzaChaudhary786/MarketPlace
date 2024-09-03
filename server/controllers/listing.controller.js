@@ -19,19 +19,17 @@ export const deleteListing = async (req, res, next) => {
 
     if (!listing) {
       return res.status(404).json({ message: "Listing not found" });
-
     }
 
     if (req.user.id !== listing.userRef) {
-      return next(errorHandler(401, "You can change own listing"))
+      return next(errorHandler(401, "You can change own listing"));
     }
 
-
-
-    await Listing.findByIdAndDelete(req.params.id)
-    res.status(200).json({ message: "Listing has been deleted" });
-
-    return res.status(201).json(listing);
+    await Listing.findByIdAndDelete(req.params.id);
+    
+    // Send the deletion success message
+    return res.status(200).json({ message: "Listing has been deleted" });
+    
   } catch (error) {
     next(error);
   }

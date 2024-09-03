@@ -29,6 +29,26 @@ const Profile = () => {
 
 
 
+  useEffect(() => {
+    if (listingData) {
+      setUserListings(listingData)
+    }
+  }, [listingData])
+
+  useEffect(() => {
+    getUserListings()
+
+  }, [])
+
+
+
+  const getUserListings = async () => {
+
+    await dispatch(Actions.UserListingsAction(currentUser._id))
+
+  }
+
+
 
   console.log("listing data is", listingData)
 
@@ -41,6 +61,8 @@ const Profile = () => {
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [showListingsError, setShowListingsError] = useState(false);
   const [userListings, setUserListings] = useState([]);
+  const [isOpen, setIsOpen] = useState(true)
+
   const fileRef = useRef(null);
 
   useEffect(() => {
@@ -150,12 +172,12 @@ const Profile = () => {
     }
   }
 
-  const handleShowListings = async (e) => {
-    e.preventDefault();
+  const handleShowListings = async () => {
 
     try {
 
       const response = await dispatch(Actions.UserListingsAction(currentUser._id));
+
 
     } catch (error) {
       setShowListingsError(true)
@@ -164,12 +186,29 @@ const Profile = () => {
 
   }
 
-  useEffect(() => {
-    if (listingData) {
-      setUserListings(listingData)
+
+
+
+  const handleListingDelete = async (id) => {
+
+
+    try {
+
+      const response = await dispatch(Actions.listingDeleteAction(id))
+
+      handleShowListings()
+
+
+
+    } catch (error) {
+
+      setShowListingsError(true)
+
+
+
     }
 
-  }, [listingData])
+  }
 
   return (
     <div className='p-3 max-w-lg mx-auto'>
@@ -257,7 +296,10 @@ const Profile = () => {
         {updateSuccess ? 'User is updated successfully!' : ''}
       </p>
       <button
-        onClick={handleShowListings}
+        onClick={() => {
+          handleShowListings()
+          setIsOpen(true)
+        }}
         className='text-green-700 w-full'>
         Show Listings
       </button>
@@ -265,7 +307,7 @@ const Profile = () => {
         {showListingsError ? 'Error showing listings' : ''}
       </p>
 
-      {userListings && userListings.length > 0 && (
+      {isOpen && userListings && userListings.length > 0 && (
         <div className='flex flex-col gap-4'>
           <h1 className='text-center mt-7 text-2xl font-semibold'>
             Your Listings
@@ -291,7 +333,9 @@ const Profile = () => {
 
               <div className='flex flex-col item-center'>
                 <button
-                  // onClick={() => handleListingDelete(listing._id)}
+                  onClick={() => {
+                    handleListingDelete(listing._id)
+                  }}
                   className='text-red-700 uppercase'
                 >
                   Delete

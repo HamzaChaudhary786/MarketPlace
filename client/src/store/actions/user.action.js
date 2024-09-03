@@ -222,6 +222,41 @@ export const createListingAction = (formData, id) => {
 
 
 
+
+
+
+
+
+
+export const listingDeleteAction = (id) => {
+
+
+    return async (dispatch) => {
+
+
+
+        try {
+            const response = await axios.delete(`${API_URL}/api/listing/delete/${id}`, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            }
+            );
+
+            const userListingData = await response.data;
+
+        } catch (error) {
+            if (error instanceof Error) {
+                console.log('error', error);
+                return error.message;
+            }
+        }
+    };
+
+}
+
+
+
 export const UserListingsAction = (id) => {
 
 
@@ -239,7 +274,7 @@ export const UserListingsAction = (id) => {
             const userListingData = await response.data;
 
 
-            console.log(userListingData,"list");
+            console.log(userListingData, "list");
 
             dispatch(
                 ReducerActions.setUserListingData({

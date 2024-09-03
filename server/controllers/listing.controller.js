@@ -15,19 +15,17 @@ export const createListing = async (req, res, next) => {
 
 export const deleteListing = async (req, res, next) => {
 
-
-  const listing = await Listing.findById(req.params.id);
-
-  if (!listing) {
-    return res.status(404).json({ message: "Listing not found" });
-  }
-
-  if (req.user.id !== listing.userRef) {
-    return next(errorHandler(401, "You can change own listing"));
-  }
-
-
   try {
+    const listing = await Listing.findById(req.params.id);
+
+    if (!listing) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
+
+    if (req.user.id !== listing.userRef) {
+      return next(errorHandler(401, "You can change own listing"));
+    }
+
     await Listing.findByIdAndDelete(req.params.id);
 
     return res.status(200).json({ message: "Listing has been deleted" });
@@ -43,31 +41,21 @@ export const deleteListing = async (req, res, next) => {
 
 
 export const updateListing = async (req, res, next) => {
-
-
-  const listing = await Listing.findById(req.params.id);
-
-
-  if (!listing) {
-    return res.status(404).json({ message: "Listing not found" });
-  }
-
-  if (req.user.id !== listing.userRef) {
-    return next(errorHandler(401, "You can change own listing"));
-  }
-
   try {
-    const upadteListing = await Listing.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    const listing = await Listing.findById(req.params.id);
 
-    res.status(200).json(upadteListing);
+    if (!listing) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
 
+    if (req.user.id !== listing.userRef) {
+      return next(errorHandler(401, "You can change own listing"));
+    }
 
-    // Send the deletion success message
-    return res.status(200).json({ message: "Listing has been deleted" });
+    const updatedListing = await Listing.findByIdAndUpdate(req.params.id, req.body, { new: true });
+
+    // Send the updated listing as a response
+    return res.status(200).json(updatedListing);
 
   } catch (error) {
     next(error);

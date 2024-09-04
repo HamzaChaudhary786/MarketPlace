@@ -10,6 +10,7 @@ import Navbar from './commonComponents/Navbar'
 import PrivateRoute from './components/PrivateRoute'
 import CreateListings from './pages/CreateListings'
 import UpdateListing from './pages/UpdateListing'
+import Listing from './pages/Listing'
 
 const App = () => {
   return (
@@ -21,10 +22,13 @@ const App = () => {
         <Route path='/signin' element={<Signin />} />
         <Route path='/signup' element={<Signout />} />
         <Route path='/about' element={<About />} />
+        <Route path={`/listing/:id`} element={<Listing />} />
+
         <Route element={<PrivateRoute />}>
           <Route path='/profile' element={<Profile />} />
           <Route path='/create-listing' element={<CreateListings />} />
           <Route path={`/update-listing/:id`} element={<UpdateListing />} />
+
 
 
         </Route>

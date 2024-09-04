@@ -1,15 +1,34 @@
-import { InputAdornment, TextField } from '@mui/material'
-import React, { useEffect } from 'react'
+import { Button, InputAdornment, TextField } from '@mui/material'
+import React, { useEffect, useState } from 'react'
 import { FaSearch } from 'react-icons/fa'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 const Navbar = () => {
-
+    const navigate = useNavigate()
     const currentUser = useSelector((state) => state.user.userData)
 
+    const [searchTerm, setSearchTerm] = useState('');
 
 
-    console.log(currentUser)
+
+
+    const handleSubmit = (e) => {
+      e.preventDefault();
+      const urlParams = new URLSearchParams(window.location.search);
+      urlParams.set('searchTerm', searchTerm);
+      const searchQuery = urlParams.toString();
+      navigate(`/search?${searchQuery}`);
+    };
+  
+    useEffect(() => {
+      const urlParams = new URLSearchParams(location.search);
+      const searchTermFromUrl = urlParams.get('searchTerm');
+      if (searchTermFromUrl) {
+        setSearchTerm(searchTermFromUrl);
+      }
+    }, [location.search]);
+
+
     return (
         <>
 
@@ -23,30 +42,36 @@ const Navbar = () => {
                         <span className='text-slate-500'>Estate</span>
                     </h1>
                     <div className='bg-slate-100 rounded-lg'>
-                        <TextField
-                            type='search'
-                            placeholder='search ...'
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position='start'>
-                                        <FaSearch />
-                                    </InputAdornment>
-                                ),
-                                sx: {
-                                    height: '40px', // Minimize the height
-                                    padding: '0 10px', // Adjust padding
-                                    fontSize: '14px', // Adjust font size
-                                },
-                            }}
-                            sx={{
-                                '& .MuiInputBase-root': {
-                                    height: '40px', // Set height for the TextField
-                                },
-                                '& .MuiOutlinedInput-input': {
-                                    padding: '10px', // Adjust input padding to minimize height
-                                },
-                            }}
-                        />
+                        <form onSubmit={handleSubmit} action="">
+                            <TextField
+                                type='search'
+                                placeholder='search ...'
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                InputProps={{
+                                    startAdornment: (
+                                        <Button type='submit'>
+                                            <InputAdornment position='start'>
+                                                <FaSearch />
+                                            </InputAdornment>
+                                        </Button>
+                                    ),
+                                    sx: {
+                                        height: '40px', // Minimize the height
+                                        padding: '0 10px', // Adjust padding
+                                        fontSize: '14px', // Adjust font size
+                                    },
+                                }}
+                                sx={{
+                                    '& .MuiInputBase-root': {
+                                        height: '40px', // Set height for the TextField
+                                    },
+                                    '& .MuiOutlinedInput-input': {
+                                        padding: '10px', // Adjust input padding to minimize height
+                                    },
+                                }}
+                            />
+                        </form>
                     </div>
                     <ul className='flex justify-around items-center gap-x-5'>
                         <Link to='/'>

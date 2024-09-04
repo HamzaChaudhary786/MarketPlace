@@ -265,11 +265,7 @@ export const UserListingsAction = (id) => {
 
 
         try {
-            const response = await axios.get(`${API_URL}/api/user/listings/${id}`, {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-            });
+            const response = await axios.get(`${API_URL}/api/user/listings/${id}`);
 
             const userListingData = await response.data;
 
@@ -337,5 +333,81 @@ export const googleAuthAction = (result) => {
 };
 
 
+export const singleListingAction = (id) => {
+
+    return async (dispatch) => {
+
+        try {
+            const response = await axios.get(`${API_URL}/api/listing/get/${id}`);
+
+            const singleList = await response.data;
+
+            dispatch(
+                ReducerActions.setSingleListData({
+                    singleList
+                }),
+            );
 
 
+            // Handle the response here if needed
+
+        } catch (error) {
+            if (error instanceof Error) {
+                console.log('error', error);
+                return error.message;
+            }
+        }
+
+
+    }
+}
+
+
+
+
+
+
+export const updateListingAction = (formData, id, userid) => {
+
+    console.log("formdata api function", formData)
+    return async (dispatch) => {
+        const body = {
+            imageUrls: formData.imageUrls,
+            name: formData.name,
+            description: formData.description,
+            address: formData.address,
+            type: formData.type,
+            bedrooms: formData.bathrooms,
+            bathrooms: formData.bathrooms,
+            regularPrice: formData.regularPrice,
+            discountPrice: formData.discountPrice,
+            offer: formData.offer,
+            parking: formData.parking,
+            furnished: formData.furnished,
+            userRef: userid,
+        };
+
+        try {
+            const response = await axios.post(`${API_URL}/api/listing/update/${id}`, body, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const listings = response.data;
+
+            console.log(listings, "listings data")
+            dispatch(
+                ReducerActions.setListings({
+                    listings,
+                })
+            );
+        } catch (error) {
+            if (error instanceof Error) {
+                console.log('error', error);
+                return error.message;
+            }
+        }
+
+    };
+};

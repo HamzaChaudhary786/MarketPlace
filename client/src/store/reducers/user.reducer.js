@@ -5,6 +5,7 @@ const userSlice = createSlice({
     userData: null,
     litings: null,
     userListingData: null,
+    singleList: null,
   },
   reducers: {
     setLogin: (state, action) => {
@@ -23,11 +24,16 @@ const userSlice = createSlice({
     },
 
     setUserListingData: (state, action) => {
-      state.userListingData= action.payload.userListingData;
-    }
+      state.userListingData = action.payload.userListingData;
+    },
+
+    setSingleListData: (state, action) => {
+      state.singleList = action.payload.singleList;
+
+    },
 
   },
 });
 
-export const { setLogin, setLogout, setListings, setUserListingData } = userSlice.actions;
+export const { setLogin, setLogout, setListings, setUserListingData, setSingleListData } = userSlice.actions;
 export default userSlice.reducer;

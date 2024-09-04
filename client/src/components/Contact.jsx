@@ -4,7 +4,11 @@ import { Link } from 'react-router-dom';
 import * as Actions from '../store/actions';
 
 export default function Contact({ listing }) {
+
   const dispatch = useDispatch()
+
+  const getUser = useSelector((state) => state.user.getUser)
+
 
   const [landlord, setLandlord] = useState(null);
   const [message, setMessage] = useState('');
@@ -12,18 +16,26 @@ export default function Contact({ listing }) {
     setMessage(e.target.value);
   };
 
+
+
+
   useEffect(() => {
     const fetchLandlord = async () => {
       try {
-        const res = await dispatch(Actions.ContactAction());
-        const data = await res.json();
-        setLandlord(data);
+        const res = await dispatch(Actions.ContactAction(listing.userRef));
       } catch (error) {
         console.log(error);
       }
     };
     fetchLandlord();
   }, [listing.userRef]);
+
+  useEffect(() => {
+    if (getUser) { setLandlord(getUser) }
+  }, [getUser])
+
+  console.log(landlord, "landlord")
+
   return (
     <>
       {landlord && (

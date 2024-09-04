@@ -411,3 +411,42 @@ export const updateListingAction = (formData, id, userid) => {
 
     };
 };
+
+
+
+
+
+
+
+export const ContactAction = (id) => {
+
+        return async (dispatch) => {
+
+            try {
+                const response = await axios.get(`${API_URL}/api/user/${id}`);
+
+                const getUser = await response.data;
+
+
+                console.log(getUser, "contact data")
+
+                dispatch(
+                    ReducerActions.setContactUser({
+                        getUser
+                    }),
+                );
+
+
+                // Handle the response here if needed
+
+            } catch (error) {
+                if (error instanceof Error) {
+                    console.log('error', error);
+                    return error.message;
+                }
+            }
+
+
+        }
+    }
+

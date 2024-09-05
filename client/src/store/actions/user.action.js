@@ -420,33 +420,70 @@ export const updateListingAction = (formData, id, userid) => {
 
 export const ContactAction = (id) => {
 
-        return async (dispatch) => {
+    return async (dispatch) => {
 
-            try {
-                const response = await axios.get(`${API_URL}/api/user/${id}`);
+        try {
+            const response = await axios.get(`${API_URL}/api/user/${id}`);
 
-                const getUser = await response.data;
-
-
-                console.log(getUser, "contact data")
-
-                dispatch(
-                    ReducerActions.setContactUser({
-                        getUser
-                    }),
-                );
+            const getUser = await response.data;
 
 
-                // Handle the response here if needed
+            console.log(getUser, "contact data")
 
-            } catch (error) {
-                if (error instanceof Error) {
-                    console.log('error', error);
-                    return error.message;
-                }
+            dispatch(
+                ReducerActions.setContactUser({
+                    getUser
+                }),
+            );
+
+
+            // Handle the response here if needed
+
+        } catch (error) {
+            if (error instanceof Error) {
+                console.log('error', error);
+                return error.message;
             }
-
-
         }
-    }
 
+
+    }
+}
+
+
+
+
+
+
+
+export const getSearchDataAction = (searchTerm) => {
+
+    return async (dispatch) => {
+
+        try {
+            const response = await axios.get(`${API_URL}/api/listing/get?${searchTerm}`);
+
+            const searchList = await response.data;
+
+
+            console.log(searchList, "search List  Data")
+
+            dispatch(
+                ReducerActions.setSearchList({
+                    searchList
+                }),
+            );
+
+
+            // Handle the response here if needed
+
+        } catch (error) {
+            if (error instanceof Error) {
+                console.log('error', error);
+                return error.message;
+            }
+        }
+
+
+    }
+}

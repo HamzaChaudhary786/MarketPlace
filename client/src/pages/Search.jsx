@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import * as Actions from '../store/actions';
+import ListingItems from '../components/ListingItems';
 
 // import ListingItem from '../components/ListingItem';
 
@@ -12,6 +13,15 @@ const Search = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch()
 
+    const searchList = useSelector((state) => state.user.searchList)
+
+    console.log(searchList, "searchList Data")
+
+    useEffect(()=>{
+        if(searchList){
+            setListings(searchList)
+        }
+    },[searchList])
     const [sidebardata, setSidebardata] = useState({
         searchTerm: '',
         type: 'all',
@@ -64,10 +74,13 @@ const Search = () => {
             setShowMore(false);
             const searchQuery = urlParams.toString();
 
+            console.log(searchQuery, "search query")
+
 
             try {
 
                 const response = await dispatch(Actions.getSearchDataAction(searchQuery))
+                setLoading(false);
                 if (response) throw response;
 
             } catch (error) {
@@ -84,17 +97,9 @@ const Search = () => {
     }, [location.search]);
 
 
-    useEffect(() => {
-        if (listings.length > 0) setShowMore(true);
 
-        // if (listings.length > 8) {
-        //     setShowMore(true);
-        // } else {
-        //     setShowMore(false);
-        // }
-        // setListings(data);
-        // setLoading(false);
-    }, [listings]);
+    console.log(sidebardata, "side bar Data");
+
 
 
 
@@ -132,6 +137,8 @@ const Search = () => {
         }
     };
 
+
+
     const handleSubmit = (e) => {
         e.preventDefault();
         const urlParams = new URLSearchParams();
@@ -145,23 +152,6 @@ const Search = () => {
         const searchQuery = urlParams.toString();
         navigate(`/search?${searchQuery}`);
     };
-
-    const onShowMoreClick = async () => {
-        const numberOfListings = listings.length;
-        const startIndex = numberOfListings;
-        const urlParams = new URLSearchParams(location.search);
-        urlParams.set('startIndex', startIndex);
-        const searchQuery = urlParams.toString();
-        const res = await fetch(`/api/listing/get?${searchQuery}`);
-        const data = await res.json();
-        if (data.length < 9) {
-            setShowMore(false);
-        }
-        setListings([...listings, ...data]);
-    };
-
-
-
 
 
 
@@ -286,7 +276,7 @@ const Search = () => {
                         {!loading &&
                             listings &&
                             listings.map((listing) => (
-                                <ListingItem key={listing._id} listing={listing} />
+                                <ListingItems key={listing._id} listing={listing} />
                             ))}
 
                         {showMore && (

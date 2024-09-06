@@ -473,7 +473,7 @@ export const getSearchDataAction = (searchTerm) => {
                     searchList
                 }),
             );
-
+            return { searchList };
 
             // Handle the response here if needed
 

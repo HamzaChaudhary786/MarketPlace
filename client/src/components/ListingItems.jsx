@@ -1,9 +1,12 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
 import { MdLocationOn } from 'react-icons/md';
+import { FaBed } from "react-icons/fa";
+import { MdOutlineBathtub } from "react-icons/md";
+
 const ListingItems = ({ listing }) => {
 
-  console.log(listing,"listing")
+  console.log(listing, "listing")
   return (
     <>
       <div className='bg-white shadow-md hover:shadow-lg transition-shadow overflow-hidden rounded-lg w-full sm:w-[330px]'>
@@ -37,16 +40,18 @@ const ListingItems = ({ listing }) => {
               {listing.type === 'rent' && ' / month'}
             </p>
             <div className='text-slate-700 flex gap-4'>
-              <div className='font-bold text-xs'>
+              <div className='font-bold flex items-center gap-x-2 text-xs'>
                 {listing.bedrooms > 1
-                  ? `${listing.bedrooms} beds `
-                  : `${listing.bedrooms} bed `}
+                  ? (<><FaBed /> {listing.bedrooms} beds</>)
+                  : (<><FaBed /> {listing.bedrooms} bed</>)}
               </div>
-              <div className='font-bold text-xs'>
+
+              <div className='font-bold flex items-center gap-x-2 text-xs'>
                 {listing.bathrooms > 1
-                  ? `${listing.bathrooms} baths `
-                  : `${listing.bathrooms} bath `}
+                  ? (<><MdOutlineBathtub /> {listing.bathrooms} baths</>)
+                  : (<><MdOutlineBathtub /> {listing.bathrooms} bath</>)}
               </div>
+
             </div>
           </div>
         </Link>

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import * as Actions from '../store/actions';
+
 import ListingItems from '../components/ListingItems';
 
 // import ListingItem from '../components/ListingItem';
@@ -17,11 +18,15 @@ const Search = () => {
 
     console.log(searchList, "searchList Data")
 
-    useEffect(()=>{
-        if(searchList){
+    useEffect(() => {
+        if (searchList) {
             setListings(searchList)
+
+            if (searchList.length > 8) {
+                setShowMore(true);
+            }
         }
-    },[searchList])
+    }, [searchList])
     const [sidebardata, setSidebardata] = useState({
         searchTerm: '',
         type: 'all',
@@ -153,6 +158,23 @@ const Search = () => {
         navigate(`/search?${searchQuery}`);
     };
 
+
+    const onShowMoreClick = async () => {
+        const numberOfListings = listings.length;
+        const startIndex = numberOfListings;
+        const urlParams = new URLSearchParams(location.search);
+        urlParams.set('startIndex', startIndex);
+        const searchQuery = urlParams.toString();
+        const response = await dispatch(Actions.getSearchDataAction(searchQuery));
+
+        const data = await response.searchList;
+
+
+        if (data.length < 9) {
+            setShowMore(false);
+        }
+        setListings([...listings, ...data]);
+    };
 
 
 

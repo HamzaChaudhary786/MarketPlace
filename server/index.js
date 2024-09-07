@@ -7,13 +7,12 @@ import listingRouter from './routes/listing.route.js'
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import path from 'path';
-import { fileURLToPath } from 'url';
 dotenv.config()
 
 
 const app = express();
 
-const _dirname = path.resolve()
+const __dirname = path.resolve()
 
 app.use(cors({
   origin: 'http://localhost:5173', // Replace with your frontend domain
@@ -36,14 +35,14 @@ app.use('/api/user', userRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/listing', listingRouter);
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
-app.use(express.static(path.resolve(__dirname, 'client', 'dist')));
+
+app.use(express.static(path.join(__dirname, '/client/dist')));
 
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'client', 'dist', 'index.html'));
-});
+  res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+})
+
 
 app.use((err, req, res, next) => {
 
@@ -58,13 +57,7 @@ app.use((err, req, res, next) => {
     }
   )
 
-
-
 })
-
-
-
-
 
 
 

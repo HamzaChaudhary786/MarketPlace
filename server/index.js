@@ -14,10 +14,20 @@ const app = express();
 
 const __dirname = path.resolve()
 
+const allowedOrigins = ['http://localhost:5173', 'https://marketplace-bf8u.onrender.com'];
+
 app.use(cors({
-  origin: 'http://localhost:5173', // Replace with your frontend domain
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true, // Allow cookies to be sent with requests
 }));
+
+
 app.use(express.json());
 app.use(cookieParser());
 

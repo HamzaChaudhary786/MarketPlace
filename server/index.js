@@ -17,13 +17,7 @@ const __dirname = path.resolve()
 const allowedOrigins = ['http://localhost:5173', 'https://marketplace-bf8u.onrender.com'];
 
 app.use(cors({
-  origin: (origin, callback) => {
-    if (allowedOrigins.includes(origin) || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: allowedOrigins,
   credentials: true, // Allow cookies to be sent with requests
 }));
 

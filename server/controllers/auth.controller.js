@@ -39,9 +39,9 @@ export const signin = async (req, res, next) => {
         res.cookie('access_token', token, {
             httpOnly: true, // Prevents JavaScript access to the cookie
             secure: process.env.NODE_ENV === 'production', // Use secure cookies in production (HTTPS only)
-            sameSite: 'lax', // Controls if cookies should be sent with cross-origin requests
-            maxAge: 24 * 60 * 60 * 1000 // Cookie expiry in milliseconds (e.g., 1 day)
-        })
+            sameSite: 'None', // Allow cross-site cookies
+            maxAge: 24 * 60 * 60 * 1000, // 1 day
+          })
             .status(200)
             .json(rest);
 

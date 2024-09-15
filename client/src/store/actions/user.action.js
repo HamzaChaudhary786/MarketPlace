@@ -22,9 +22,7 @@ export const registerAction = (userName, email, password) => {
             const response = await axios.post(`${API_URL}/api/auth/signup`, body, {
                 headers: {
                     'Content-Type': 'application/json'
-                },
-                withCredentials: true // Ensure credentials are sent with requests
-
+                }
             });
 
             const data = response.data;  // No need for response.json() with axios
@@ -204,8 +202,7 @@ export const createListingAction = (formData, id) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                withCredentials: true // Ensure credentials are sent with requests
-
+                withCredentials: true
             });
 
             const listings = response.data;
@@ -246,8 +243,6 @@ export const listingDeleteAction = (id) => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                withCredentials: true // Ensure credentials are sent with requests
-
             }
             );
 
@@ -273,12 +268,7 @@ export const UserListingsAction = (id) => {
 
 
         try {
-            const response = await axios.get(`${API_URL}/api/user/listings/${id}`, {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                withCredentials: true
-            });
+            const response = await axios.get(`${API_URL}/api/user/listings/${id}`);
 
             const userListingData = await response.data;
 
@@ -289,7 +279,6 @@ export const UserListingsAction = (id) => {
                 ReducerActions.setUserListingData({
                     userListingData
                 }),
-
             );
 
             // Handle the response here if needed
@@ -352,12 +341,7 @@ export const singleListingAction = (id) => {
     return async (dispatch) => {
 
         try {
-            const response = await axios.get(`${API_URL}/api/listing/get/${id}`, {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                withCredentials: true
-            });
+            const response = await axios.get(`${API_URL}/api/listing/get/${id}`);
 
             const singleList = await response.data;
 
@@ -411,8 +395,7 @@ export const updateListingAction = (formData, id, userid) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                withCredentials: true // Ensure credentials are sent with requests
-
+                withCredentials: true
             });
 
             const listings = response.data;
@@ -444,12 +427,7 @@ export const ContactAction = (id) => {
     return async (dispatch) => {
 
         try {
-            const response = await axios.get(`${API_URL}/api/user/${id}`, {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                withCredentials: true
-            });
+            const response = await axios.get(`${API_URL}/api/user/${id}`);
 
             const getUser = await response.data;
 
@@ -487,12 +465,7 @@ export const getSearchDataAction = (searchTerm) => {
     return async (dispatch) => {
 
         try {
-            const response = await axios.get(`${API_URL}/api/listing/get?${searchTerm}`, {
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                withCredentials: true
-            });
+            const response = await axios.get(`${API_URL}/api/listing/get?${searchTerm}`);
 
             const searchList = await response.data;
 
